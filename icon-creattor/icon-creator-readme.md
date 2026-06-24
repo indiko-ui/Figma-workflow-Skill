@@ -184,4 +184,4 @@ Page: Icons
 
 ---
 
-*icon-creator skill v1.0 — built from session workflow*
+*icon-creator skill v1.0 — built from session workflow by indiko-ui*
