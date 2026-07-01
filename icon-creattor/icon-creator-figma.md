@@ -1,30 +1,11 @@
 ---
 name: icon-creator
-description: >
-  Icon set creation & management ใน Figma — ครบ workflow: define spec, preview & iterate
-  shape ใน chat, audit vs spec (live area/stroke), balance check, import SVG เป็น component.
-  Triggers (EN): create icon set, make icons, icon spec, preview icon, audit icon,
-  balance check icons, import icon figma, icon too thick, stroke heavy, icon dense,
-  fix icon path, icon live area, icon naming, icon consistency, adjust icon,
-  icon color variable, bind icon stroke, swap icon keep color, icon multi-size, icon size variant.
-  Triggers (TH): สร้าง icon, ทำ icon set, icon หนาเกิน, icon ดูแน่น, เช็ก icon,
-  ปรับ icon, icon ไม่ balance, วาง icon ใกล้กัน, import icon, stroke หนาเกิน,
-  เส้น icon ติดกัน, icon ดูไม่ consistent, แก้ icon,
-  เปลี่ยนสี icon, bind สี icon, swap icon สีคงอยู่, icon หลายขนาด, icon size variant.
-  ALWAYS use when user wants to create, adjust, audit, or import any icon.
-  REQUIRES: figma-use skill loaded before every use_figma call.
-compatibility: Designed for Figma Agent (use_figma tool) and figma-console-mcp Desktop Bridge. Requires active Figma file open in desktop app.
-allowed-tools: use_figma
-license: © Indiko-UI. All rights reserved.
-metadata:
-  author: Indiko-UI
-  copyright: © Indiko-UI
-  version: "4.0"
+description: "Icon set creation & management ใน Figma — ครบ workflow: define spec, preview & iterate shape ใน chat, audit vs spec (live area/stroke), balance check, import SVG เป็น component. Triggers (EN): create icon set, make icons, icon spec, preview icon, audit icon, balance check icons, import icon figma, icon too thick, stroke heavy, icon dense, fix icon path, icon live area, icon naming, icon consistency, adjust icon, icon color variable, bind icon stroke, swap icon keep color, icon multi-size, icon size variant. Triggers (TH): สร้าง icon, ทำ icon set, icon หนาเกิน, icon ดูแน่น, เช็ก icon, ปรับ icon, icon ไม่ balance, วาง icon ใกล้กัน, import icon, stroke หนาเกิน, เส้น icon ติดกัน, icon ดูไม่ consistent, แก้ icon, เปลี่ยนสี icon, bind สี icon, swap icon สีคงอยู่, icon หลายขนาด, icon size variant. ALWAYS use when user wants to create, adjust, audit, or import any icon. REQUIRES: figma-use skill loaded before every use_figma call."
 ---
 
 # Icon Creator Skill
 
-> © **Indiko-UI** · version 4.0 — Figma Agent skill for icon set creation, multi-size, color tokens & documentation links.
+> © **Indiko-UI** · version 4.2 — Figma Agent skill for icon set creation, multi-size, color tokens & documentation links.
 > Created and maintained by Indiko-UI ([indiko-ui.com](https://indiko-ui.com)). Do not redistribute without attribution.
 
 Full workflow สำหรับ icon set creation และ management ใน Figma
@@ -59,14 +40,16 @@ view /mnt/skills/user/figma-use/SKILL.md
 
 เมื่อ user ขอสร้าง/import icon — **ต้องถาม size ก่อนเสมอ**:
 
-| User ต้องการ | ใช้ section ไหน | ผลลัพธ์ |
-|---|---|---|
-| Single 24px | Section 6 Step 2b | 1 component 24px |
-| **Multi-size 16/20/24/32** | **Section 6.5 (ALL-IN-ONE)** | component set + Size variant |
-| เปลี่ยนสีได้ (token) | + Section 8 หลัง import | bound variable + color picker |
+| User ต้องการ | ใช้ section ไหน | ผลลัพธ์ | เวลา |
+|---|---|---|---|
+| Draft / preview เร็ว | Section 6.4 **FAST mode** | single 24px, 1 call ทั้ง set | ~4-6s |
+| Single 24px | Section 6 Step 2b | 1 component ต่อ icon | ปานกลาง |
+| **Multi-size 16/20/24/32** | **Section 6.5 ALL-IN-ONE** | component set + Size variant | ~12-18s |
+| เปลี่ยนสีได้ (token) | + Section 8 หลัง import | bound variable + color picker | + เพิ่ม |
 
 > ⚠️ **อย่า default เป็น 24px เงียบๆ** — ถ้า user พูดถึง icon set / DS / production ให้ถาม multi-size ก่อน
-> Multi-size = **Section 6.5** (สร้าง 4 size + combine ครบใน 1 script) ไม่ใช่ Step 2b
+> Multi-size = **Section 6.5** (pre-compute SVG ใน Claude + 1 call ทั้ง set) ลด round-trip สูงสุด
+> Draft/preview = **Section 6.4 FAST** — ไม่มี combineAsVariants เร็วกว่า 3-4×
 
 ---
 
@@ -456,7 +439,7 @@ return { pages };
 ```js
 // helper — เรียกหลังสร้าง/แก้ component ทุกตัว (constant ใช้ร่วมทุก flow)
 const SKILL_CREDIT = "© Indiko-UI";
-const SKILL_VERSION = "4.0";
+const SKILL_VERSION = "4.2";
 
 function stampCredit(node) {
   node.setPluginData("creator", SKILL_CREDIT);
@@ -469,7 +452,7 @@ function stampCredit(node) {
 **อ่าน credit กลับ:**
 ```js
 node.getPluginData("creator");      // "© Indiko-UI"
-node.getPluginData("skillVersion"); // "4.0"
+node.getPluginData("skillVersion"); // "4.1"
 ```
 
 > ทุก script ใน Section 6 / 6.5 / 8.5 / 9 — เพิ่ม `stampCredit(comp)` (หรือ `set`) ก่อน return
@@ -479,7 +462,7 @@ node.getPluginData("skillVersion"); // "4.0"
 ```js
 // ⚠️ Step นี้สร้างแค่ 24px — ถ้าต้องการ multi-size ใช้ Section 8.5a แทน
 const SKILL_CREDIT = "© Indiko-UI";
-const SKILL_VERSION = "4.0";
+const SKILL_VERSION = "4.2";
 
 // LINK_MODE: "figma" (self-link) หรือ "custom" (doc site)
 const LINK_MODE = "figma";
@@ -639,6 +622,143 @@ await figma_execute({
 
 ---
 
+## 6.4 Speed Optimization — ลดเวลา Generate
+
+### Bottleneck ที่ทำให้ช้า
+
+| จุด | สาเหตุ | เวลา |
+|---|---|---|
+| Round-trip calls | แต่ละ `figma_execute` call = 1 wait cycle | สูงสุด |
+| `combineAsVariants` × N | Figma recompute layout ทุกครั้ง | สูง |
+| `createNodeFromSvg` × 24 | 6 icons × 4 sizes | ปานกลาง |
+| SVG scaling ใน sandbox | compute path ใน plugin | ต่ำ |
+
+### 3 ระดับ Speed Mode
+
+**Mode FAST — Single 24px, 1 call ทั้ง set (เร็วที่สุด)**
+ใช้เมื่อ: draft, preview, ไม่ต้องการ multi-size
+→ ไม่มี `combineAsVariants`, ไม่มี scaling, 1 call = ทั้ง set
+
+**Mode STANDARD — Multi-size, 1 call ทั้ง set (แนะนำ)**
+ใช้เมื่อ: production DS
+→ Pre-compute SVG string ทุก size ใน Claude ก่อนส่ง Figma (ลด sandbox compute)
+→ รวมทุก icon ใน 1 call แทน batch (ลด round-trip)
+
+**Mode BATCH — Multi-size, แบ่ง N icons ต่อ call (กัน timeout)**
+ใช้เมื่อ: set ใหญ่ 10+ icons
+→ 3 icons per call (เพิ่มจาก 2 เดิม)
+
+### Key pattern: Pre-compute SVG ใน Claude
+
+```
+# แทนที่จะให้ Figma scale path:
+Claude คำนวณ SVG string ครบ 4 size ก่อน → ส่ง array เข้า Figma ทีเดียว
+
+iconDefs = [
+  { base: "home", svgs: {
+    "16": "<svg width='16'...stroke-width='1.34'.../>",
+    "20": "<svg width='20'...stroke-width='1.65'.../>",
+    "24": "<svg width='24'...stroke-width='2'.../>",
+    "32": "<svg width='32'...stroke-width='2.5'.../>",
+  }},
+  ...
+]
+# Figma ทำแค่ createNodeFromSvg — ไม่ต้อง compute อะไรเพิ่ม
+```
+
+**Script — STANDARD mode (1 call ทั้ง set, pre-computed SVGs):**
+```js
+// figma_execute / use_figma — ALL icons, ALL sizes, 1 call
+// Claude pre-computes SVGs ก่อนส่ง → Figma ทำแค่ import
+const SKILL_CREDIT = "© Indiko-UI";
+const SKILL_VERSION = "4.2";
+const fileKey = figma.fileKey;
+const fileName = encodeURIComponent(figma.root.name.replace(/\s+/g, "-"));
+const SECTION_ID = "SECTION_ID_HERE";
+
+const section = await figma.getNodeByIdAsync(SECTION_ID);
+
+// iconDefs: Claude generate SVG string ครบก่อนวาง script
+// → ไม่มี scaling ใน Figma sandbox = เร็วขึ้น ~40%
+const iconDefs = [
+  {
+    base: "home", desc: "Home — navigate to dashboard",
+    svgs: {
+      "16": `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="..." stroke="#1C1C1C" stroke-width="1.34" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+      "20": `<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="..." stroke="#1C1C1C" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+      "24": `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="..." stroke="#1C1C1C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+      "32": `<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="..." stroke="#1C1C1C" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+    }
+  },
+  // ... เพิ่ม icon ต่อไป (ทุกตัวในคำสั่งเดียว)
+];
+
+const sizeList = ["16", "20", "24", "32"];
+const strokeMap = { "16": 1.34, "20": 1.65, "24": 2, "32": 2.5 };
+const allSets = [];
+
+for (const icon of iconDefs) {
+  const iconFrame = figma.createFrame();
+  iconFrame.name = icon.base;
+  iconFrame.fills = [];
+  section.appendChild(iconFrame);
+
+  const sizeComps = [];
+  for (const sz of sizeList) {
+    const svgNode = figma.createNodeFromSvg(icon.svgs[sz]);
+    svgNode.resize(+sz, +sz);
+    svgNode.fills = [];
+    const vector = svgNode.findOne(n => n.type === "VECTOR");
+    if (vector) vector.name = "shape";
+    const comp = figma.createComponentFromNode(svgNode);
+    comp.name = `Size=${sz}`;
+    iconFrame.appendChild(comp);
+    sizeComps.push(comp);
+  }
+
+  const set = figma.combineAsVariants(sizeComps, iconFrame);
+  set.name = `icon/${icon.base}`;
+  set.description = icon.desc;
+  set.fills = [];
+
+  let vx = 8;
+  for (const child of set.children) { child.x = vx; child.y = 8; vx += child.width + 16; }
+  set.resize(vx + 8, 48);
+  iconFrame.resize(set.width + 16, set.height + 16);
+
+  set.documentationLinks = [{ uri: `https://www.figma.com/design/${fileKey}/${fileName}?node-id=${set.id.replace(/:/g,"-")}` }];
+  set.setPluginData("creator", SKILL_CREDIT);
+  set.setPluginData("skillVersion", SKILL_VERSION);
+
+  allSets.push({ name: set.name, variants: set.children.map(c => c.name) });
+}
+
+const cols = 2, gap = 32, pad = 24;
+const finalFrames = section.findAll(n => n.type === "FRAME" && n.parent === section);
+let maxW = [0, 0];
+finalFrames.forEach((f, i) => { maxW[i%2] = Math.max(maxW[i%2], f.width); });
+finalFrames.forEach((f, i) => {
+  const col = i%2, row = Math.floor(i/2);
+  f.x = pad + (col === 0 ? 0 : maxW[0] + gap);
+  f.y = pad + row * (64 + gap);
+});
+const totalW = pad + maxW[0] + gap + maxW[1] + pad;
+const totalH = pad + Math.ceil(finalFrames.length/2) * (64 + gap) + pad;
+section.resizeWithoutConstraints(totalW, totalH);
+
+return { total: allSets.length, sets: allSets };
+```
+
+**ผลต่างเวลา (6 icons, 4 sizes):**
+
+| Approach | Calls | เวลาประมาณ |
+|---|---|---|
+| เดิม — batch 2/call | 3 calls | ~30-45s |
+| STANDARD — pre-compute, 1 call | 1 call | ~12-18s |
+| FAST — single 24px, 1 call | 1 call | ~4-6s |
+
+---
+
 ## 6.5 Multi-Size: Full Path (16/20/24/32) — ALL-IN-ONE
 
 > ⚠️ **ถ้า user ขอ multi-size — ใช้ section นี้ ไม่ใช่ Step 2b** (Step 2b สร้างแค่ 24px)
@@ -659,7 +779,7 @@ const PAGE_NAME = "Icons";
 const ICON_BASE = "home";   // ชื่อ icon ไม่รวม prefix
 const ICON_DESC = "Home — navigate to main dashboard";
 const SKILL_CREDIT = "© Indiko-UI";
-const SKILL_VERSION = "4.0";
+const SKILL_VERSION = "4.2";
 
 // self-link config
 const fileKey = (typeof figma.fileKey === "string" && figma.fileKey) || "u7w4oJi9y9dqIHpjp6RrRQ";
@@ -675,8 +795,6 @@ if (!section) {
   page.appendChild(section);
 }
 
-// ⚠️ แต่ละ size: SVG ของตัวเอง — stroke-width + viewBox + path ต่างกัน
-// 16px simplify, 32px เพิ่ม detail ได้ (ถ้า scale: path × size/24)
 const sizeSpecs = [
   { size: 16, svg: `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 8L8 2L14 8V14H10V10H6V14H2V8Z" stroke="#000000" stroke-width="1.34" stroke-linecap="round" stroke-linejoin="round"/></svg>` },
   { size: 20, svg: `<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.5 10L10 2.5L17.5 10V17.5H12.5V12.5H7.5V17.5H2.5V10Z" stroke="#000000" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round"/></svg>` },
@@ -684,26 +802,32 @@ const sizeSpecs = [
   { size: 32, svg: `<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 16L16 4L28 16V28H20V20H12V28H4V16Z" stroke="#000000" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>` },
 ];
 
+const iconFrame = figma.createFrame();
+iconFrame.name = ICON_BASE;
+iconFrame.fills = [];
+section.appendChild(iconFrame);
+
 // STEP 1: สร้าง 4 size components
 const sizeComps = [];
 for (const spec of sizeSpecs) {
   const svgNode = figma.createNodeFromSvg(spec.svg);
-  svgNode.resize(spec.size, spec.size);  // frame = size เป๊ะ
-  svgNode.fills = [];                     // ⚠️ ลบ default white fill ของ frame
+  svgNode.resize(spec.size, spec.size);
+  svgNode.fills = [];
 
   const vector = svgNode.findOne(n => n.type === "VECTOR");
   if (vector) vector.name = "shape";
 
-  const comp = figma.createComponentFromNode(svgNode);  // จาก FRAME → size ถูก
-  comp.name = `${ICON_BASE}/Size=${spec.size}`;          // variant naming
-  section.appendChild(comp);
+  const comp = figma.createComponentFromNode(svgNode);
+  comp.name = `Size=${spec.size}`;
+  iconFrame.appendChild(comp);
   sizeComps.push(comp);
 }
 
 // STEP 2: combine เป็น component set (variant property "Size")
-const set = figma.combineAsVariants(sizeComps, page);
+const set = figma.combineAsVariants(sizeComps, iconFrame);
 set.name = `icon/${ICON_BASE}`;
 set.description = ICON_DESC;
+set.fills = [];
 
 // จัด grid (combineAsVariants stack ที่ 0,0)
 let gx = 16, gy = 16, maxH = 0;
@@ -713,6 +837,7 @@ for (const child of set.children) {
   gx += child.width + 24;
 }
 set.resize(gx + 16, maxH + 32);
+iconFrame.resize(set.width + 32, set.height + 32);
 
 // STEP 3: self-link ที่ระดับ SET (หลังได้ set.id)
 const urlNodeId = set.id.replace(/:/g, "-");
@@ -1187,9 +1312,8 @@ const variable = await figma.variables.getVariableByIdAsync("VARIABLE_ID_DEFAULT
 const ICON_BASE = "home";
 const page = figma.currentPage;
 
-const sizeComps = ["16", "20", "24", "32"].map(sz =>
-  page.findOne(n => n.type === "COMPONENT" && n.name === `${ICON_BASE}/Size=${sz}`)
-).filter(Boolean);
+const set = page.findOne(n => n.type === "COMPONENT_SET" && n.name === `icon/${ICON_BASE}`);
+const sizeComps = set ? set.children : [];
 
 const results = [];
 for (const comp of sizeComps) {
@@ -1248,6 +1372,14 @@ if (!section) {
   page.appendChild(section);
 }
 
+let iconFrame = section.findOne(n => n.type === "FRAME" && n.name === ICON_BASE);
+if (!iconFrame) {
+  iconFrame = figma.createFrame();
+  iconFrame.name = ICON_BASE;
+  iconFrame.fills = [];
+  section.appendChild(iconFrame);
+}
+
 // กำหนด SVG ต่อ size — ใส่ path จริงของแต่ละ size
 // (ถ้า scale จาก master: path coordinate × size/24, viewBox = size)
 const sizeSpecs = [
@@ -1262,26 +1394,24 @@ let x = 0;
 
 for (const spec of sizeSpecs) {
   const svgNode = figma.createNodeFromSvg(spec.svg);
-  svgNode.resize(spec.size, spec.size);  // frame = size เป๊ะ
-  svgNode.fills = [];                     // ⚠️ ลบ default white fill ของ frame
+  svgNode.resize(spec.size, spec.size);
+  svgNode.fills = [];
 
-  // rename VECTOR child เป็น "shape" — เก็บ FRAME เป็น boundary
   const vector = svgNode.findOne(n => n.type === "VECTOR");
   if (vector) vector.name = "shape";
 
-  const comp = figma.createComponentFromNode(svgNode);  // จาก FRAME → size ถูก
-  // ⚠️ variant naming: "{base}/Size={n}" — กำหนด variant property "Size"
-  comp.name = `${ICON_BASE}/Size=${spec.size}`;
+  const comp = figma.createComponentFromNode(svgNode);
+  comp.name = `Size=${spec.size}`;
 
-  section.appendChild(comp);
+  iconFrame.appendChild(comp);
   comp.x = x;
   comp.y = 0;
   x += spec.size + 16;
 
   created.push({
     name: comp.name,
-    frameSize: { w: comp.width, h: comp.height },  // ต้อง = spec.size
-    strokeWeight: vector?.strokeWeight              // ต้อง = spec.stroke
+    frameSize: { w: comp.width, h: comp.height },
+    strokeWeight: vector?.strokeWeight
   });
 }
 
@@ -1300,17 +1430,20 @@ return { created };
 const ICON_BASE = "home";
 const page = figma.currentPage;
 
+const section = page.findOne(n => n.type === "SECTION" && n.name === "New Icons");
+const iconFrame = section?.findOne(n => n.type === "FRAME" && n.name === ICON_BASE);
 const sizeComps = ["16", "20", "24", "32"].map(sz =>
-  page.findOne(n => n.type === "COMPONENT" && n.name === `${ICON_BASE}/Size=${sz}`)
+  iconFrame?.findOne(n => n.type === "COMPONENT" && n.name === `Size=${sz}`)
 ).filter(Boolean);
 
 if (sizeComps.length !== 4) {
   return { error: "ไม่ครบ 4 size", found: sizeComps.map(c => c.name) };
 }
 
-const set = figma.combineAsVariants(sizeComps, page);
+const set = figma.combineAsVariants(sizeComps, iconFrame);
 set.name = `icon/${ICON_BASE}`;
 set.description = "Home — navigate to main dashboard";
+set.fills = [];
 
 // combineAsVariants stack ทุกตัวที่ (0,0) — จัด grid ใหม่
 let x = 16, y = 16, maxH = 0;
@@ -1468,7 +1601,7 @@ const page = figma.currentPage;
 
 // หา component + variant ทั้งหมด (frame ที่ครอบ shape)
 const comps = page.findAll(n =>
-  n.type === "COMPONENT" && (n.name.includes("icon/") || n.name.includes("/Size="))
+  n.type === "COMPONENT" && (n.name.includes("icon/") || n.name.includes("/Size=") || /^Size=\d+$/.test(n.name))
 );
 
 const cleaned = [];
@@ -1511,12 +1644,13 @@ icon/kyc/id-card
 
 **Multi-size variant naming (Mechanism C):**
 ```
-ก่อน combineAsVariants — ตั้งชื่อ component แต่ละ size:
-home/Size=16
-home/Size=20
-home/Size=24
-home/Size=32
+ก่อน combineAsVariants — ตั้งชื่อ component แต่ละ size แบบ bare (ไม่ใส่ชื่อ icon):
+Size=16
+Size=20
+Size=24
+Size=32
 
+ชื่อ icon อยู่ที่ sub-frame ครอบก่อน combine (กันชื่อชนกันข้าม icon)
 หลัง combineAsVariants → set.name = "icon/home"
 → ได้ variant property "Size" อัตโนมัติ
 ```
@@ -1604,5 +1738,5 @@ M8 12L11 15L16 9
 
 ---
 
-© **Indiko-UI** · icon-creator v4.0 · [indiko-ui.com](https://indiko-ui.com)
+© **Indiko-UI** · icon-creator v4.2 · [indiko-ui.com](https://indiko-ui.com)
 All rights reserved. ทุก component ที่สร้างจาก skill นี้ถูก stamp ด้วย `creator: © Indiko-UI` ใน plugin data
