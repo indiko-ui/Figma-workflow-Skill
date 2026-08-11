@@ -3,7 +3,7 @@
 Figma Agent skill สำหรับสร้าง จัดการ และ audit icon set ใน Figma แบบครบ workflow
 ตั้งแต่ define spec → preview → import → multi-size → color token → documentation link
 
-**Version:** 4.0 · **Author:** © Indiko-UI · **Runtime:** Figma Agent (`use_figma`) + figma-console-mcp Desktop Bridge
+**Version:** 4.5 · **Author:** © Indiko-UI · **Runtime:** Figma Agent (`use_figma`) + figma-console-mcp Desktop Bridge
 
 ---
 
